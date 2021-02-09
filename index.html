@@ -221,8 +221,7 @@ form {
 	            })
 			} else if (prop == 'language') {
 				var language = document.getElementsByName('language');
-				userObj['language'] = [];
-				var userLang = userObj[prop];
+				var userLang = userObj['language'];
 	            language.forEach((lang) => {
 	                if (userLang.includes(lang.value)) {
 	                    document.getElementsByName(lang.name)[0].checked = true;
@@ -259,6 +258,15 @@ form {
 	            })
 			}
 		}
+
+		var isErr = false;
+		for (const prop in userObj) {
+			if(userObj[prop] == '' ||  userObj[prop] == undefined) {
+				alert('Please fill the form to save');
+				return 0;
+			}
+		}
+
 		var xmlhttp = getHttpObj();
 
 		if (userId == '') {
@@ -297,7 +305,10 @@ form {
 
 	       		var para = document.createElement('p'); // Create a element
 	       		para.appendChild(tableContent);
-				
+
+	       		if(resp.length == 0)
+	       		para.appendChild(createElement('h2', 'No record'));	
+	       
 				document.getElementById("body").appendChild(para);
 	      	}
 	    };

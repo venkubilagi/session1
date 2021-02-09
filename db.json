@@ -20,27 +20,13 @@
       "sapId": "2222",
       "email": "pari.sanna@gmail.com",
       "contact": "9964503086",
-      "gender": "Female",
-      "location": "Bangalore",
-      "language": [
-        "Hindi",
-        "Kannada"
-      ],
-      "id": 2
-    },
-    {
-      "name": "Venkatesh",
-      "lastName": "S",
-      "sapId": "12321",
-      "email": "v.bilagi@gmail.com",
-      "contact": "23432",
       "gender": "Male",
       "location": "Bangalore",
       "language": [
         "English",
         "Hindi"
       ],
-      "id": 3
+      "id": 2
     }
   ]
 }
