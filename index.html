@@ -18,18 +18,19 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 
-/*input[type=text], input[type=email] {
+input[type=text], input[type=email] {
   padding: 12px 20px;
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  margin-left: 8px;
 }
 
 form {
   border: 3px solid #f1f1f1; 
   padding: 20px;
-  width: 50%;
-}*/
+  width: 90%;
+}
 
 </style>
 </head>
@@ -48,13 +49,14 @@ form {
       language: "Language"
 	};
 
-	const FORM_FDS = {
+	const FORM_FIELDS = {
 	  name: {
 	  	type: "input",
 	  	attrs: {
 	  		type: "text",
 		  	name: "name",
-		  	placeholder: "First Name" 
+		  	placeholder: "First Name",
+		  	value: '' 
 	  	}
 	  },
       lastName: {
@@ -62,7 +64,8 @@ form {
 	  	attrs: {
 	  		type: "text",
 		  	name: "lastName",
-		  	placeholder: "Last Name"
+		  	placeholder: "Last Name",
+		  	value: '' 
 		} 
 	  },
       sapId: {
@@ -70,7 +73,8 @@ form {
 	  	attrs: {
 	  		type: "text",
 		  	name: "sapId",
-		  	placeholder: "SAP ID" 
+		  	placeholder: "SAP ID",
+		  	value: ''  
 		}  	
 	  },
       email: {
@@ -78,7 +82,8 @@ form {
 	  	attrs: {
 	  		type: "email",
 		  	name: "email",
-		  	placeholder: "Email" 
+		  	placeholder: "Email",
+		  	value: ''  
 		}  	
 	  },
       contact: {
@@ -86,7 +91,8 @@ form {
 	  	attrs: {
 	  		type: "text",
 		  	name: "contact",
-		  	placeholder: "Contact" 
+		  	placeholder: "Contact",
+		  	value: ''  
 		}
 	  },
       gender: {
@@ -115,7 +121,8 @@ form {
 	  	type: "checkbox",
 	  	attrs: {
 	  		type: "checkbox",
-	  		name: "language"
+	  		name: "language",
+	  		value: '' 
 	  	},
 	  	options: {
 	  		English: "English",
@@ -136,6 +143,7 @@ form {
 
 	function showHideUserForm() {
 	  var x = document.getElementById("userForm");
+	  x.reset();
 	  if (x.style.display === "none") {
 	    x.style.display = "block";
 	  } else {
@@ -224,7 +232,8 @@ form {
 				var userLang = userObj['language'];
 	            language.forEach((lang) => {
 	                if (userLang.includes(lang.value)) {
-	                    document.getElementsByName(lang.name)[0].checked = true;
+	                	var test = document.querySelector('input[value="'+lang.value+'"][type="checkbox"]');
+	                    test.checked = true;
 	                }
 	            })
 			}
@@ -427,27 +436,29 @@ form {
 	}
 
 	function createAddUserForm(userObj) {
-		var fildesObj = FORM_FDS;
+		var fildesObj = FORM_FIELDS;
 		var form = document.createElement("form"); 
 		form.setAttribute("action", "#"); 
 		form.setAttribute("name", ""); 
 		form.setAttribute('id', 'userForm');
 		form.style.display = "none";
 		
-		var br = document.createElement("br");  
+		var br = document.createElement("br"); 
+		form.appendChild(br.cloneNode()); 
 		for (const property in fildesObj) {
 			var seleField = fildesObj[property];	
 			
 		  	if (seleField['type'] == 'input') {	
-		  		form.appendChild(br.cloneNode());
+		  		//form.appendChild(br.cloneNode());
 		  		var val = getFieldValue(userObj, property);
 		  		if(val != null) {
 		  			seleField['attrs'].value = val;
 		  		} 	
 			  var formFld = createElement(seleField['type'], '', seleField['attrs']);
 			  form.appendChild(formFld); 
-			  form.appendChild(br.cloneNode()); 
+			  //form.appendChild(br.cloneNode()); 
 			} else if(seleField['type'] == 'radio') {
+			  form.appendChild(br.cloneNode()); 
 			  form.appendChild(createElement('label', 'Gender:'));
 			  form.appendChild(createElementRadio());
 			} else if(seleField['type'] == 'checkbox') {
