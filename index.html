@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+/*input[type=text], input[type=email] {
+  padding: 12px 20px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+form {
+  border: 3px solid #f1f1f1; 
+  padding: 20px;
+  width: 50%;
+}*/
+
+</style>
+</head>
+<body id="body">
+
+<script type="text/javascript">
+	var BASE_URL = 'http://localhost:3001/';
+	var TB_ROW = {
+	  "name": "Name",
+      "lastName": "Last Name",
+      "sapId": "SAP ID",
+      "email": "Email",
+      "contact": "Contact",
+      "gender": "Gender",
+      "location": "Location",
+      "language": "Language"
+	};
+
+	var FORM_FDS = {
+	  "name": {
+	  	"type": "input",
+	  	"attrs": {
+	  		"type": "text",
+		  	"name": "name",
+		  	"placeholder": "First Name" 
+	  	}
+	  },
+      "lastName": {
+	  	"type": "input",
+	  	"attrs": {
+	  		"type": "text",
+		  	"name": "lastName",
+		  	"placeholder": "Last Name"
+		} 
+	  },
+      "sapId": {
+	  	"type": "input",
+	  	"attrs": {
+	  		"type": "text",
+		  	"name": "sapId",
+		  	"placeholder": "SAP ID" 
+		}  	
+	  },
+      "email": {
+	  	"type": "input",
+	  	"attrs": {
+	  		"type": "email",
+		  	"name": "email",
+		  	"placeholder": "Email" 
+		}  	
+	  },
+      "contact": {
+	  	"type": "input",
+	  	"attrs": {
+	  		"type": "text",
+		  	"name": "contact",
+		  	"placeholder": "Contact" 
+		}
+	  },
+      "gender": {
+	  	"type": "radio",
+	  	"attrs": {
+	  		"type": "radio",
+	  		"name": "gender"
+	  	},
+	  	"options": {
+	  		"Male": "Male",
+	  		"Female": "Female"
+	  	} 
+	  },
+      "location": {
+	  	"type": "select",
+	  	"attrs": {
+	  		"type": "select",
+	  		"name": "location"
+	  	},	
+	  	"options": {
+	  		"Bangalore": "Bangalore",
+	  		"Dehli": "Dehli"
+	  	} 
+	  },
+      "language": {
+	  	"type": "checkbox",
+	  	"attrs": {
+	  		"type": "checkbox",
+	  		"name": "language"
+	  	},
+	  	"options": {
+	  		"English": "English",
+	  		"Hindi": "Hindi",
+	  		"Kannada": "Kannada"
+	  	} 
+	  }
+	};
+
+	//set the header to appl.
+	document.getElementById("body").appendChild(createElement('h1', 'User Management'));
+
+	//set the add user btn
+	//document.getElementById("body").appendChild(createElement('button', 'Add User'));
+	document.getElementById("body").appendChild(createElement('button', 'Add User' , {}, {}, 'showhide'));
+
+	createAddUserForm();
+
+	function showHideUserForm() {
+		var x = document.getElementById("userForm");
+	  if (x.style.display === "none") {
+	    x.style.display = "block";
+	  } else {
+	    x.style.display = "none";
+	  }
+	}
+
+	function getHttpObj() {
+		return new XMLHttpRequest();
+	}
+
+	//generate the row 
+	function addTableRow(rowDataObj) {
+		var rowData = TB_ROW;
+		var tr = document.createElement("tr");
+
+		for (const property in rowData) {
+		  var td = document.createElement("td");
+		  var tc = document.createTextNode(rowDataObj[property]);
+		  td.appendChild(tc);
+		  tr.appendChild(td);
+		}
+
+		var td = document.createElement("td");
+		var rm = createElement('button', 'Remove', {}, {}, 'rm', rowDataObj);
+		//var tc = document.createTextNode(rm);
+		td.appendChild(rm);
+		tr.appendChild(td);
+		
+		return tr;
+	}
+
+	function addTableHeader() {
+		var rowDataObj = TB_ROW;
+		var tr = document.createElement("tr");
+
+		for (const property in rowDataObj) {
+		  var td = document.createElement("th");
+		  var tc = document.createTextNode(rowDataObj[property]);
+		  td.appendChild(tc);
+		  tr.appendChild(td);
+		}
+
+		var td = document.createElement("th");
+		var tc = document.createTextNode("Actions");
+		td.appendChild(tc);
+		tr.appendChild(td);
+		
+		return tr;
+	}
+
+	function removeUser(userObj) {
+		var isDelete = confirm("Are you sure to delete this user");
+		if (isDelete) {
+			var xmlhttp = getHttpObj();
+			xmlhttp.onreadystatechange = function() {
+		    	if (this.readyState == 4 && this.status == 200) {
+		       		
+		      	}
+		    };
+		    xmlhttp.open("DELETE", BASE_URL + "users/" + userObj.id, true);
+		    xmlhttp.send();
+		}
+	}
+
+	function saveUser() {
+		var userObj = TB_ROW;
+		var formFlds = TB_ROW;
+		
+		
+		for (const prop in formFlds) {
+			if (prop != 'language' && prop != 'gender') {
+				userObj[prop] = document.getElementsByName(prop)[0].value;
+			} else if (prop == 'gender') {
+				var gender = document.getElementsByName(prop);
+	            gender.forEach((gen) => {
+	                if (gen.checked) {
+	                    userObj[prop] = gen.value;
+	                }
+	            })
+			} else if (prop == 'language') {
+				var language = document.getElementsByName(prop);
+				userObj[prop] = [];
+	            language.forEach((lang) => {
+	                if (lang.checked) {
+	                    userObj[prop].push(lang.value);
+	                }
+	            })
+			}
+		}
+
+		var xmlhttp = getHttpObj();
+		xmlhttp.onreadystatechange = function() {
+	    	if (this.readyState == 4 && this.status == 200) {
+	       		
+	      	}
+	    };
+	    xmlhttp.open("POST", BASE_URL + "users", true);
+	    xmlhttp.setRequestHeader("Content-type", "application/json");
+	    xmlhttp.send(JSON.stringify(userObj));
+	    console.log(userObj);
+	}
+
+
+	//get the user
+	function getUser() {
+		var xmlhttp = getHttpObj();
+		xmlhttp.onreadystatechange = function() {
+	    	if (this.readyState == 4 && this.status == 200) {
+	       		var resp = JSON.parse(this.responseText);
+	       		var tableContent = document.createElement("table");
+				tableContent.appendChild(addTableHeader());
+
+				for (let i=0; i< resp.length; i++) {
+				  tableContent.appendChild(addTableRow(resp[i]));
+				}
+
+	       		var para = document.createElement('p'); // Create a element
+	       		para.appendChild(tableContent);
+				
+				document.getElementById("body").appendChild(para);
+	      	}
+	    };
+	    xmlhttp.open("GET", BASE_URL + "users", true);
+	    xmlhttp.send();
+	}
+
+	getUser();
+
+	function createElement(type, content = '', attrs = {}, options = {}, eventType, rowDataObj) {
+		var para = document.createElement(type); // Create a element
+
+		if (content != '')
+		para.innerHTML = content; // Insert text
+
+		for (const prop in attrs) {
+			para.setAttribute(prop, attrs[prop]); 
+		}
+
+		for (const prop in options) {
+			
+		}
+
+		if (eventType == 'rm') {
+			para.addEventListener('click', function() { removeUser(rowDataObj) } )
+		}
+
+		if (eventType == 'showhide') {
+			para.addEventListener('click', function() { showHideUserForm() } )
+		}
+
+		if (eventType == 'add') {
+			para.addEventListener('click', function(e) { saveUser(); e.preventDefault(); } )
+		}
+		
+		return para;
+	}
+
+	function createElementRadio(options) {
+		var containerDiv = createElement("div"); 
+		//for (const prop in options) {
+		var radioYes = document.createElement("input");  
+        radioYes.setAttribute("type", "radio");
+        radioYes.setAttribute("name", "gender"); 
+        radioYes.setAttribute("value", "Male");
+        var lblYes = document.createElement("lable");  
+        var textYes = document.createTextNode("Male");  
+        lblYes.appendChild(textYes);  
+        containerDiv.appendChild(radioYes);
+        containerDiv.appendChild(lblYes);
+
+		var space = document.createElement("span");  
+        space.setAttribute("innerHTML", "  ");  
+        containerDiv.appendChild(space);  
+
+        var radioNo = document.createElement("input");  
+        radioNo.setAttribute("type", "radio");  
+        //radioNo.setAttribute("id", "radioNo" + count);  
+        radioNo.setAttribute("name", "gender");  
+        radioNo.setAttribute("value", "Female");
+
+        var lblNo = document.createElement("label");  
+        lblNo.innerHTML =  "Female";  
+        containerDiv.appendChild(radioNo);  
+        containerDiv.appendChild(lblNo);  
+
+        return containerDiv; 
+		//}
+	}
+
+	function createElementCheckBox(options) {
+		var containerDiv = createElement("div"); 
+
+		for (const property in options) {	
+		  var checkbox = document.createElement('input');
+		  checkbox.setAttribute("name", options[property]); 
+		  checkbox.setAttribute("type", "checkbox");  
+		  checkbox.setAttribute("value", options[property]); 
+		 
+		  var label = document.createElement('label');
+		  label.appendChild(document.createTextNode(options[property]));
+		  
+		  containerDiv.appendChild(checkbox);
+		  containerDiv.appendChild(label);
+	  	}
+	  return containerDiv;
+	}
+
+	function createElementSelect (values) {
+ 	  var containerDiv = createElement("div");	
+	  var select = document.createElement("select");
+
+	  var option = document.createElement("option");
+	  select.name = "location";
+	  option.value = "";
+	  option.text = "Select";
+	  select.appendChild(option); 
+
+	  for (const property in values) {
+	    var option = document.createElement("option");
+	    option.value = values[property];
+	    option.text = values[property];
+	    select.appendChild(option);
+	  }
+	 
+	  containerDiv.appendChild(select);
+	  return containerDiv;
+	}
+
+	function createAddUserForm(rowDataObj) {
+		var fildesObj = FORM_FDS;
+		var form = document.createElement("form"); 
+		form.setAttribute("action", "#"); 
+		form.setAttribute('id', 'userForm');
+		form.style.display = "none";
+		var br = document.createElement("br");  
+		for (const property in fildesObj) {
+			var seleField = fildesObj[property];	
+			
+		  	if (seleField['type'] == 'input') {	
+		  		form.appendChild(br.cloneNode()); 	
+			  var formFld = createElement(seleField['type'], '', seleField['attrs']);
+			  form.appendChild(formFld); 
+			  form.appendChild(br.cloneNode()); 
+			} else if(seleField['type'] == 'radio') {
+			  form.appendChild(createElement('label', 'Gender:'));
+			  form.appendChild(createElementRadio());
+			} else if(seleField['type'] == 'checkbox') {
+		      form.appendChild(createElement('label', 'Language:'));
+			  form.appendChild(createElementCheckBox(seleField['options']));
+			} else if(seleField['type'] == 'select') {
+		      form.appendChild(createElement('label', 'Location:'));
+			  form.appendChild(createElementSelect(seleField['options']));
+			}
+			
+		}
+
+		form.appendChild(createElement('button', 'Save User' , {}, {}, 'add'));
+
+		document.getElementById("body").appendChild(form);
+	}
+	//createAddUserForm();
+
+	//createElement('h1', "This is a paragraph.")
+</script>
+</body>
+</html>
