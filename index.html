@@ -36,91 +36,91 @@ form {
 <body id="body">
 
 <script type="text/javascript">
-	var BASE_URL = 'http://localhost:3001/';
-	var TB_ROW = {
-	  "name": "Name",
-      "lastName": "Last Name",
-      "sapId": "SAP ID",
-      "email": "Email",
-      "contact": "Contact",
-      "gender": "Gender",
-      "location": "Location",
-      "language": "Language"
+	const BASE_URL = 'http://localhost:3001/';
+	const TB_ROW = {
+	  name: "Name",
+      lastName: "Last Name",
+      sapId: "SAP ID",
+      email: "Email",
+      contact: "Contact",
+      gender: "Gender",
+      location: "Location",
+      language: "Language"
 	};
 
-	var FORM_FDS = {
-	  "name": {
-	  	"type": "input",
-	  	"attrs": {
-	  		"type": "text",
-		  	"name": "name",
-		  	"placeholder": "First Name" 
+	const FORM_FDS = {
+	  name: {
+	  	type: "input",
+	  	attrs: {
+	  		type: "text",
+		  	name: "name",
+		  	placeholder: "First Name" 
 	  	}
 	  },
-      "lastName": {
-	  	"type": "input",
-	  	"attrs": {
-	  		"type": "text",
-		  	"name": "lastName",
-		  	"placeholder": "Last Name"
+      lastName: {
+	  	type: "input",
+	  	attrs: {
+	  		type: "text",
+		  	name: "lastName",
+		  	placeholder: "Last Name"
 		} 
 	  },
-      "sapId": {
-	  	"type": "input",
-	  	"attrs": {
-	  		"type": "text",
-		  	"name": "sapId",
-		  	"placeholder": "SAP ID" 
+      sapId: {
+	  	type: "input",
+	  	attrs: {
+	  		type: "text",
+		  	name: "sapId",
+		  	placeholder: "SAP ID" 
 		}  	
 	  },
-      "email": {
-	  	"type": "input",
-	  	"attrs": {
-	  		"type": "email",
-		  	"name": "email",
-		  	"placeholder": "Email" 
+      email: {
+	  	type: "input",
+	  	attrs: {
+	  		type: "email",
+		  	name: "email",
+		  	placeholder: "Email" 
 		}  	
 	  },
-      "contact": {
-	  	"type": "input",
-	  	"attrs": {
-	  		"type": "text",
-		  	"name": "contact",
-		  	"placeholder": "Contact" 
+      contact: {
+	  	type: "input",
+	  	attrs: {
+	  		type: "text",
+		  	name: "contact",
+		  	placeholder: "Contact" 
 		}
 	  },
-      "gender": {
-	  	"type": "radio",
-	  	"attrs": {
-	  		"type": "radio",
-	  		"name": "gender"
+      gender: {
+	  	type: "radio",
+	  	attrs: {
+	  		type: "radio",
+	  		name: "gender"
 	  	},
-	  	"options": {
-	  		"Male": "Male",
-	  		"Female": "Female"
+	  	options: {
+	  		Male: "Male",
+	  		Female: "Female"
 	  	} 
 	  },
-      "location": {
-	  	"type": "select",
-	  	"attrs": {
-	  		"type": "select",
-	  		"name": "location"
+      location: {
+	  	type: "select",
+	  	attrs: {
+	  		type: "select",
+	  		name: "location"
 	  	},	
-	  	"options": {
-	  		"Bangalore": "Bangalore",
-	  		"Dehli": "Dehli"
+	  	options: {
+	  		Bangalore: "Bangalore",
+	  		Dehli: "Dehli"
 	  	} 
 	  },
-      "language": {
-	  	"type": "checkbox",
-	  	"attrs": {
-	  		"type": "checkbox",
-	  		"name": "language"
+      language: {
+	  	type: "checkbox",
+	  	attrs: {
+	  		type: "checkbox",
+	  		name: "language"
 	  	},
-	  	"options": {
-	  		"English": "English",
-	  		"Hindi": "Hindi",
-	  		"Kannada": "Kannada"
+	  	options: {
+	  		English: "English",
+	  		Hindi: "Hindi",
+	  		Kannada: "Kannada"
 	  	} 
 	  }
 	};
@@ -135,7 +135,7 @@ form {
 	createAddUserForm();
 
 	function showHideUserForm() {
-		var x = document.getElementById("userForm");
+	  var x = document.getElementById("userForm");
 	  if (x.style.display === "none") {
 	    x.style.display = "block";
 	  } else {
@@ -161,8 +161,10 @@ form {
 
 		var td = document.createElement("td");
 		var rm = createElement('button', 'Remove', {}, {}, 'rm', rowDataObj);
+		var edit = createElement('button', 'Edit', {}, {}, 'edit', rowDataObj);
 		//var tc = document.createTextNode(rm);
 		td.appendChild(rm);
+		td.appendChild(edit);
 		tr.appendChild(td);
 		
 		return tr;
@@ -193,7 +195,7 @@ form {
 			var xmlhttp = getHttpObj();
 			xmlhttp.onreadystatechange = function() {
 		    	if (this.readyState == 4 && this.status == 200) {
-		       		
+		       		alert('User record deleted succesfuly');
 		      	}
 		    };
 		    xmlhttp.open("DELETE", BASE_URL + "users/" + userObj.id, true);
@@ -201,11 +203,42 @@ form {
 		}
 	}
 
+	function editUser(userObj) {
+		createAddUserForm();
+		var x = document.getElementById("userForm");
+		x.style.display = "block";
+		x.setAttribute('name', userObj['id']);
+
+		for (const prop in userObj) {
+			if (prop != 'language' && prop != 'gender' && prop != 'id') {
+				document.getElementsByName(prop)[0].value = userObj[prop];
+			} else if (prop == 'gender') {
+				var gender = document.getElementsByName('gender');
+	            gender.forEach((gen) => {
+	                if (gen.value == userObj['gender']) {
+	                     document.getElementsByName(gen.name)[0].checked = true;
+	                }
+	            })
+			} else if (prop == 'language') {
+				var language = document.getElementsByName('language');
+				userObj['language'] = [];
+				var userLang = userObj[prop];
+	            language.forEach((lang) => {
+	                if (userLang.includes(lang.value)) {
+	                    document.getElementsByName(lang.name)[0].checked = true;
+	                }
+	            })
+			}
+		}
+	}
+
 	function saveUser() {
 		var userObj = TB_ROW;
 		var formFlds = TB_ROW;
 		
-		
+		var x = document.getElementById("userForm");
+		var userId = x.getAttribute("name");
+
 		for (const prop in formFlds) {
 			if (prop != 'language' && prop != 'gender') {
 				userObj[prop] = document.getElementsByName(prop)[0].value;
@@ -217,23 +250,32 @@ form {
 	                }
 	            })
 			} else if (prop == 'language') {
-				var language = document.getElementsByName(prop);
-				userObj[prop] = [];
+				var language = document.getElementsByName('language');
+				userObj['language'] = [];
 	            language.forEach((lang) => {
 	                if (lang.checked) {
-	                    userObj[prop].push(lang.value);
+	                    userObj['language'].push(lang.value);
 	                }
 	            })
 			}
 		}
-
 		var xmlhttp = getHttpObj();
-		xmlhttp.onreadystatechange = function() {
-	    	if (this.readyState == 4 && this.status == 200) {
-	       		
-	      	}
-	    };
-	    xmlhttp.open("POST", BASE_URL + "users", true);
+
+		if (userId == '') {
+			xmlhttp.onreadystatechange = function() {
+		    	if (this.readyState == 4 && this.status == 201) {
+		       		alert('User record created succesfuly');
+		      	}
+		    };
+		    xmlhttp.open("POST", BASE_URL + "users", true);
+		} else {
+			xmlhttp.onreadystatechange = function() {
+		    	if (this.readyState == 4 && this.status == 200) {
+		       		alert('User record edit succesfuly');
+		      	}
+		    };
+		    xmlhttp.open("PUT", BASE_URL + "users/"+userId, true);
+		}
 	    xmlhttp.setRequestHeader("Content-type", "application/json");
 	    xmlhttp.send(JSON.stringify(userObj));
 	    console.log(userObj);
@@ -290,6 +332,10 @@ form {
 		if (eventType == 'add') {
 			para.addEventListener('click', function(e) { saveUser(); e.preventDefault(); } )
 		}
+
+		if (eventType == 'edit') {
+			para.addEventListener('click', function(e) { editUser(rowDataObj); e.preventDefault(); } )
+		}
 		
 		return para;
 	}
@@ -331,7 +377,7 @@ form {
 
 		for (const property in options) {	
 		  var checkbox = document.createElement('input');
-		  checkbox.setAttribute("name", options[property]); 
+		  checkbox.setAttribute("name", 'language'); 
 		  checkbox.setAttribute("type", "checkbox");  
 		  checkbox.setAttribute("value", options[property]); 
 		 
@@ -365,18 +411,28 @@ form {
 	  return containerDiv;
 	}
 
-	function createAddUserForm(rowDataObj) {
+	function getFieldValue(userObj, property) {
+		return userObj && userObj[property] != undefined ? userObj[property] : null;		
+	}
+
+	function createAddUserForm(userObj) {
 		var fildesObj = FORM_FDS;
 		var form = document.createElement("form"); 
 		form.setAttribute("action", "#"); 
+		form.setAttribute("name", ""); 
 		form.setAttribute('id', 'userForm');
 		form.style.display = "none";
+		
 		var br = document.createElement("br");  
 		for (const property in fildesObj) {
 			var seleField = fildesObj[property];	
 			
 		  	if (seleField['type'] == 'input') {	
-		  		form.appendChild(br.cloneNode()); 	
+		  		form.appendChild(br.cloneNode());
+		  		var val = getFieldValue(userObj, property);
+		  		if(val != null) {
+		  			seleField['attrs'].value = val;
+		  		} 	
 			  var formFld = createElement(seleField['type'], '', seleField['attrs']);
 			  form.appendChild(formFld); 
 			  form.appendChild(br.cloneNode()); 

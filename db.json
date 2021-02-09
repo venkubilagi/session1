@@ -1,33 +1,46 @@
 {
   "users": [
     {
-      "id": 1,
       "name": "Venkatesh",
       "lastName": "Sannabilagi",
       "sapId": "1111",
       "email": "venkatesh.sanna@gmail.com",
       "contact": "9964503085",
-      "gender": "male",
+      "gender": "Male",
       "location": "Bangalore",
       "language": [
-        "English",
         "Hindi",
         "Kannada"
-      ]
+      ],
+      "id": 1
     },
     {
-      "id": 2,
       "name": "Parineeti",
       "lastName": "Sannabilagi",
       "sapId": "2222",
       "email": "pari.sanna@gmail.com",
       "contact": "9964503086",
-      "gender": "female",
+      "gender": "Female",
+      "location": "Bangalore",
+      "language": [
+        "Hindi",
+        "Kannada"
+      ],
+      "id": 2
+    },
+    {
+      "name": "Venkatesh",
+      "lastName": "S",
+      "sapId": "12321",
+      "email": "v.bilagi@gmail.com",
+      "contact": "23432",
+      "gender": "Male",
       "location": "Bangalore",
       "language": [
         "English",
-        "Kannada"
-      ]
+        "Hindi"
+      ],
+      "id": 3
     }
   ]
 }
